@@ -1,0 +1,13 @@
+<!-- scanner/templates/scanner/view_image.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Document Image</title>
+</head>
+<body>
+    <h1>{{ document.title }}</h1>
+    <img src="{{ document.file.url }}" alt="Document Image" style="max-width: 100%;">
+    <br><br>
+    <a href="{% url 'document_list' %}">← Back to Document List</a>
+</body>
+</html>

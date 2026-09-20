@@ -1,0 +1,15 @@
+<!-- scanner/templates/scanner/create_folder.html -->
+<h2>Buat Folder Baru</h2>
+<form method="post">
+  {% csrf_token %}
+  <input type="text" name="name" placeholder="Nama Folder" required>
+  <button type="submit">Buat Folder</button>
+</form>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<a href="{% url 'document_list' %}">Kembali ke Daftar Dokumen</a>

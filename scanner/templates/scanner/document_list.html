@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Dokumen</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 30px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .document {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .document img {
+            max-width: 300px;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .ocr-result, .smartscan-preview {
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #999;
+            white-space: pre-wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+            color: #555;
+        }
+
+        .actions {
+            margin-top: 10px;
+        }
+
+        .actions form {
+            display: inline;
+        }
+
+        .actions button, .actions a.toggle-btn {
+            background-color: #4285f4;
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            margin-right: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .actions button.delete {
+            background-color: #e53935;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h1>📁 Daftar Dokumen</h1>
+    <a href="{% url 'logout' %}" class="logout-button">🔒 Logout</a>
+</div>
+
+{% for document in documents %}
+    <div class="document">
+        <strong>{{ document.title }}</strong>
+
+        {% if document.smart_scanned_file %}
+            <span class="tag">✨ Smart Scanned</span>
+        {% endif %}
+        {% if document.ocr_text %}
+            <span class="tag">🔍 OCR Aktif</span>
+        {% endif %}
+
+        <p><strong>Folder:</strong> {{ document.folder.name }}</p>
+        <p><strong>Uploaded at:</strong> {{ document.uploaded_at|date:"F j, Y, g:i a" }}</p>
+
+        {% if document.file %}
+            {% with file_ext=document.file.name|lower|slice:"-4:" %}
+                {% if file_ext == ".png" or file_ext == ".jpg" or file_ext == "jpeg" %}
+                    <img src="{{ document.file.url }}" alt="{{ document.title }}">
+                {% else %}
+                    <p><a href="{{ document.file.url }}">📄 Unduh dokumen</a></p>
+                {% endif %}
+            {% endwith %}
+        {% else %}
+            <p><em>⚠️ Tidak ada file yang terhubung.</em></p>
+        {% endif %}
+
+        <div class="actions">
+            {% if document.smart_scanned_file %}
+                <a class="toggle-btn" onclick="toggleSection('smartscan-{{ document.id }}')">👀 Preview Smart Scan</a>
+            {% endif %}
+
+            {% if document.ocr_text %}
+                <a class="toggle-btn" onclick="toggleSection('ocr-{{ document.id }}')">📝 Lihat Hasil OCR</a>
+            {% endif %}
+
+            <form method="POST" action="{% url 'delete_document' document.id %}" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?');">
+                {% csrf_token %}
+                <button type="submit" class="delete">🗑️ Hapus</button>
+            </form>
+        </div>
+
+        {% if document.smart_scanned_file %}
+            <div id="smartscan-{{ document.id }}" class="smartscan-preview hidden">
+                <strong>Preview Smart Scan:</strong><br>
+                <img src="{{ document.smart_scanned_file.url }}" alt="Smart Scan Preview">
+            </div>
+        {% endif %}
+
+        {% if document.ocr_text %}
+            <div id="ocr-{{ document.id }}" class="ocr-result hidden">
+                <strong>Hasil OCR:</strong><br>
+                {{ document.ocr_text }}
+            </div>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>Belum ada dokumen yang diunggah.</p>
+{% endfor %}
+
+<a href="{% url 'upload_document' %}">⬆️ Upload Dokumen Baru</a> |
+<a href="{% url 'create_folder' %}">📂 Buat Folder</a>
+
+<script>
+    function toggleSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.toggle('hidden');
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!-- preview.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preview Smart Scan</title>
+</head>
+<body>
+    <h1>Preview Hasil Smart Scan</h1>
+    {% if document.preview %}
+        <img src="{{ document.preview.url }}" alt="Preview" style="max-width: 100%; height: auto;">
+    {% else %}
+        <p>Belum ada hasil smart scan.</p>
+    {% endif %}
+    <a href="{% url 'upload_document' %}">← Kembali</a>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Dokumen</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 300px;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        .form-check {
+            margin-top: 10px;
+        }
+
+        .form-check input {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Dokumen</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Title -->
+        <label for="id_title">Judul Dokumen</label>
+        {{ form.title }}
+
+        <!-- File input -->
+        <label for="id_file">Pilih File</label>
+        {{ form.file }}
+
+        <!-- Folder selection -->
+        <label for="id_folder">Pilih Folder</label>
+        {{ form.folder }}
+
+        <!-- Checkbox: Deteksi Teks -->
+        <div class="form-check">
+            {{ form.detect_text }}
+            <label for="id_detect_text">🔍 Deteksi teks (OCR)</label>
+        </div>
+
+        <div class="form-check">
+            {{ form.smart_scan }}
+            <label for="id_smart_scan">✨ Smart Scan (peningkatan gambar)</label>
+        </div>
+        
+        
+
+        <!-- Submit button -->
+        <button type="submit">Upload</button>
+    </form>
+    <!-- {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %} -->
+
+    <a href="{% url 'create_folder' %}">+ Buat Folder Baru</a>
+</body>
+</html>

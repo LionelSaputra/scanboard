@@ -1,0 +1,13 @@
+# Core
+Django>=5.2,<6.0
+mysqlclient>=2.2
+
+# Image processing
+opencv-python>=4.8
+Pillow>=10.0
+
+# OCR provider API
+requests>=2.31
+
+# Loads .env in development (optional — settings.py degrades gracefully without it)
+python-dotenv>=1.0
